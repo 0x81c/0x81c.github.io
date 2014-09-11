@@ -40,7 +40,7 @@ function draw() {
   background(255);
 
   //get audio volume and map
-  var vol = input.getLevel() * 5;
+  var vol = input.getLevel() * 10;
 
   //draw gradient
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
@@ -49,7 +49,7 @@ function draw() {
   for (quad_num = 0; quad_num < Quads.length; quad_num++) {
     var p = Quads[quad_num].points.slice(0);
 
-    for (i = 0; i < p.length; i++) {
+    for (i = 0; i < p.length + 1; i++) {
       if (p % 2 != 0) {
         var x = p[i - 1];
         var y = p[i];
