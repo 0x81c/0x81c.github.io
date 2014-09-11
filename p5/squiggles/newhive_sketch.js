@@ -10,7 +10,6 @@ var high_thick = 30;
 var shake = 10;
 var gradient_c1, gradient_c2;
 var curves = [];
-var greeting;
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
@@ -18,16 +17,6 @@ function setup() {
   gradient_c1 = random_color();
   gradient_c2 = random_color();
   axis = floor(random(1, 3));
-
-  greeting = createElement('h2', 'what is your name?');
-  greeting.position(width / 2, height / 10);
-  greeting.html(div id="wrapper" style="text-align: center">    
-    <div id="yourdiv" style="display: inline-block;">You text</div>
-</div>)
-
-  textAlign(CENTER)
-  textSize(50);
-
 }
 
 function draw() {
