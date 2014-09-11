@@ -40,7 +40,7 @@ function draw() {
   background(255);
 
   //get audio volume and map
-  var vol = input.getLevel(.8) * 10;
+  var vol = input.getLevel(.95) * 10;
   //var vol = 1;
 
   //draw gradient
@@ -82,7 +82,6 @@ function draw() {
     quad(p[0], p[1], p[4], p[5], p[2], p[3], p[6], p[7]);
   }
 }
-
 
 function createQuads() {
 
