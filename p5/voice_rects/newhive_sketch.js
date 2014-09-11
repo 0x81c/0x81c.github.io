@@ -64,7 +64,8 @@ function draw() {
     }
 
     strokeWeight(Quads[quad_num].thickness);
-    var adjusted_color = Quads[quad_num].line_color * vol
+    var adjusted_color = Quads[quad_num].line_color * vol;
+    console.log(adjusted_color);
 
     stroke(Quads[quad_num].line_color);
     quad(p[0], p[1], p[4], p[5], p[2], p[3], p[6], p[7]);
