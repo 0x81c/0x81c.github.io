@@ -55,8 +55,8 @@ function draw() {
         var y = p[i];
         var x_rel_to_center = x - width / 2;
         var y_rel_to_center = y - height / 2;
-        var adjusted_x = width / 2 - (x_rel_to_center * (1 - vol));
-        var adjusted_y = height / 2 - (y_rel_to_center * (1 - vol));
+        var adjusted_x = width / 2 - (x_rel_to_center * (vol));
+        var adjusted_y = height / 2 - (y_rel_to_center * (vol));
         p[i - 1] = adjusted_x;
         p[i] = adjusted_y;
       }
@@ -64,7 +64,7 @@ function draw() {
 
     strokeWeight(Quads[quad_num].thickness);
     stroke(Quads[quad_num].line_color);
-    quad(p[0] * vol, p[1] * vol, p[4], p[5], p[2], p[3], p[6], p[7]);
+    quad(p[0], p[1], p[4], p[5], p[2], p[3], p[6], p[7]);
   }
 }
 
