@@ -55,8 +55,8 @@ function draw() {
         var y = p[i];
         var x_rel_to_center = x - width / 2;
         var y_rel_to_center = y - height / 2;
-        var adjusted_x = x - (x_rel_to_center * (1 - vol));
-        var adjusted_y = y - (y_rel_to_center * (1 - vol));
+        var adjusted_x = width / 2 - (x_rel_to_center * (1 - vol));
+        var adjusted_y = height / 2 - (y_rel_to_center * (1 - vol));
         p[i - 1] = adjusted_x;
         p[i] = adjusted_y;
       }
