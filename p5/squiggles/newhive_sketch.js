@@ -2,6 +2,7 @@ var number_of_squiggles = 13;
 var number_of_points = 3;
 var Y_AXIS = 1;
 var X_AXIS = 2;
+var axis;
 var low_color = 30;
 var high_color = 255;
 var low_thick = 8;
@@ -15,9 +16,26 @@ function setup() {
   createCurves();
   gradient_c1 = random_color();
   gradient_c2 = random_color();
+  axis = floor(random(1, 3));
 }
 
+function draw() {
+  background(255);
+
+  //draw gradient
+  setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
+
+  for (squiggle = 0; squiggle < curves.length; squiggle++) {
+    var p = curves[squiggle].points
+    strokeWeight(curves[squiggle].thickness);
+    stroke(curves[squiggle].line_color);
+    bezier(p[0], p[1], mouseX + random(-shake, shake), mouseY + random(-shake, shake), p[4], p[5], p[2], p[3]);
+  }
+}
+
+
 function createCurves() {
+
   for (squiggle = 0; squiggle < number_of_squiggles; squiggle++) {
     
     curves[squiggle] = {
@@ -48,22 +66,6 @@ function createCurves() {
   }
 }
 
-function draw() {
-  background(255);
-
-  //draw gradient
-  setGradient(0, 0, width, height, gradient_c1, gradient_c2, X_AXIS)
-
-  for (squiggle = 0; squiggle < curves.length; squiggle++) {
-    var p = curves[squiggle].points
-    strokeWeight(curves[squiggle].thickness);
-    stroke(curves[squiggle].line_color);
-    bezier(p[0], p[1], mouseX + random(-shake, shake), mouseY + random(-shake, shake), p[4], p[5], p[2], p[3]);
-  }
-
-  //stop after one loop
-  //noLoop();
-}
 
 function random_color() {
   function random_val() {
@@ -126,4 +128,5 @@ function mousePressed() {
   createCurves();
   gradient_c1 = random_color();
   gradient_c2 = random_color();
+  axis = floor(random(1,3));
 }
