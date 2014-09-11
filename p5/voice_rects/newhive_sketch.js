@@ -1,5 +1,3 @@
-
-
 var number_of_quads = 13;
 var number_of_points = 4;
 var Quads = [];
@@ -19,8 +17,6 @@ var shake = 10;
 
 //audio stuff
 var input;
-var analyzer;
-
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
@@ -45,7 +41,6 @@ function draw() {
 
   //get audio volume and map
   var vol = input.getLevel();
-  console.log(vol);
 
   //draw gradient
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
@@ -53,6 +48,20 @@ function draw() {
   //draw quads
   for (quad_num = 0; quad_num < Quads.length; quad_num++) {
     var p = Quads[quad_num].points.slice(0);
+
+    for (i = 0; i < p.length; i++) {
+      if (p % 2 != 0) {
+        var x = p[i - 1];
+        var y = p[i];
+        var x_rel_to_center = x - width / 2;
+        var y_rel_to_center = y - height / 2;
+        var adjusted_x = x - (x_rel_to_center * (1 - vol));
+        var adjusted_y = y - (y_rel_to_center * (1 - vol));
+        p[i - 1] = adjusted_x;
+        p[i] = adjusted_y;
+      }
+    }
+
     strokeWeight(Quads[quad_num].thickness);
     stroke(Quads[quad_num].line_color);
     quad(p[0] * vol, p[1] * vol, p[4], p[5], p[2], p[3], p[6], p[7]);
