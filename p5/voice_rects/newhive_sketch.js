@@ -50,14 +50,18 @@ function draw() {
   for (quad_num = 0; quad_num < Quads.length; quad_num++) {
     var p = Quads[quad_num].points.slice(0);
 
+    var clamped_vol
+    if (vol > 1) {
+      clamped_vol = 1;
+    }
     for (i = 0; i <= p.length; i++) {
       if (i % 2 != 0) {
         var x = p[i - 1];
         var y = p[i];
         var x_rel_to_center = x - width / 2;
         var y_rel_to_center = y - height / 2;
-        var adjusted_x = width / 2 + (x_rel_to_center * (1 - vol));
-        var adjusted_y = height / 2 + (y_rel_to_center * (1 - vol));
+        var adjusted_x = width / 2 + (x_rel_to_center * (1 - clamped_vol));
+        var adjusted_y = height / 2 + (y_rel_to_center * (1 - clamped_vol));
         p[i - 1] = adjusted_x + random(-shake, shake);
         p[i] = adjusted_y + random(-shake, shake);
       }
@@ -65,9 +69,9 @@ function draw() {
 
     strokeWeight(Quads[quad_num].thickness);
     var adjusted_color = Quads[quad_num].line_color;
-    var r = red(adjusted_color) * (1 - vol);
-    var g = green(adjusted_color) * (1 - vol);
-    var b = blue(adjusted_color) * (1 - vol);
+    var r = red(adjusted_color) * (1 - clamped_vol);
+    var g = green(adjusted_color) * (1 - clamped_vol);
+    var b = blue(adjusted_color) * (1 - clamped_vol);
     var adjusted_color = color(r, g, b);
     stroke(adjusted_color);
     quad(p[0], p[1], p[4], p[5], p[2], p[3], p[6], p[7]);
