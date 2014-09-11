@@ -49,8 +49,8 @@ function draw() {
   for (quad_num = 0; quad_num < Quads.length; quad_num++) {
     var p = Quads[quad_num].points.slice(0);
 
-    for (i = 0; i < p.length; i++) {
-      if (p % 2 != 0) {
+    for (i = 0; i <= p.length; i++) {
+      if (i % 2 != 0) {
         var x = p[i - 1];
         var y = p[i];
         var x_rel_to_center = x - width / 2;
