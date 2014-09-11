@@ -56,8 +56,8 @@ function draw() {
         var y = p[i];
         var x_rel_to_center = x - width / 2;
         var y_rel_to_center = y - height / 2;
-        var adjusted_x = width / 2 + (x_rel_to_center * (vol));
-        var adjusted_y = height / 2 + (y_rel_to_center * (vol));
+        var adjusted_x = width / 2 + (x_rel_to_center * (1 - vol));
+        var adjusted_y = height / 2 + (y_rel_to_center * (1 - vol));
         p[i - 1] = adjusted_x + random(-shake, shake);
         p[i] = adjusted_y + random(-shake, shake);
       }
@@ -65,11 +65,10 @@ function draw() {
 
     strokeWeight(Quads[quad_num].thickness);
     var adjusted_color = Quads[quad_num].line_color;
-    var r = red(adjusted_color);
-    var g = green(adjusted_color);
-    var b = blue(adjusted_color);
-    var a = alpha(adjusted_color) * vol;
-    var adjusted_color = color(r, g, b, a);
+    var r = red(adjusted_color) * vol;
+    var g = green(adjusted_color) * vol;
+    var b = blue(adjusted_color) * vol;
+    var adjusted_color = color(r, g, b);
     stroke(adjusted_color);
     quad(p[0], p[1], p[4], p[5], p[2], p[3], p[6], p[7]);
   }
