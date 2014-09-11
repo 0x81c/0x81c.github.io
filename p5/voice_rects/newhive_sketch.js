@@ -60,8 +60,8 @@ function draw() {
         if (vol > 1) {
           clamped_volume = 1;
         }
-        var adjusted_x = width / 2 + (x_rel_to_center * (1 - vol));
-        var adjusted_y = height / 2 + (y_rel_to_center * (1 - vol));
+        var adjusted_x = width / 2 + (x_rel_to_center * (1 - clamped_volume));
+        var adjusted_y = height / 2 + (y_rel_to_center * (1 - clamped_volume));
         p[i - 1] = adjusted_x + random(-shake, shake);
         p[i] = adjusted_y + random(-shake, shake);
       }
