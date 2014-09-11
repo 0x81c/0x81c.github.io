@@ -40,7 +40,8 @@ function draw() {
   background(255);
 
   //get audio volume and map
-  var vol = input.getLevel();
+  var vol = input.getLevel() * 5;
+  var vol = 1;
 
   //draw gradient
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
