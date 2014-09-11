@@ -52,7 +52,7 @@ function draw() {
 
   //draw quads
   for (quad_num = 0; quad_num < Quads.length; quad_num++) {
-    var p = Quads[quad_num].points
+    var p = Quads[quad_num].points.slice(0);
     strokeWeight(Quads[quad_num].thickness);
     stroke(Quads[quad_num].line_color);
     quad(p[0] * vol, p[1] * vol, p[4], p[5], p[2], p[3], p[6], p[7]);
