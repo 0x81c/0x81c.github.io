@@ -59,6 +59,8 @@ function draw() {
         var clamped_volume
         if (vol > 1) {
           clamped_volume = 1;
+        } else {
+          clamped_volume = vol;
         }
         var adjusted_x = width / 2 + (x_rel_to_center * (1 - clamped_volume));
         var adjusted_y = height / 2 + (y_rel_to_center * (1 - clamped_volume));
