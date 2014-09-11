@@ -69,7 +69,7 @@ function draw() {
     var g = green(adjusted_color);
     var b = blue(adjusted_color);
     var a = alpha(adjusted_color) * vol;
-    var adjusted_color = color(r, g, b);
+    var adjusted_color = color(r, g, b, a);
     stroke(adjusted_color);
     quad(p[0], p[1], p[4], p[5], p[2], p[3], p[6], p[7]);
   }
