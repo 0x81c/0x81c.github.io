@@ -65,9 +65,10 @@ function draw() {
 
     strokeWeight(Quads[quad_num].thickness);
     var adjusted_color = Quads[quad_num].line_color;
-    var r = red(adjusted_color) * vol;
-    var g = green(adjusted_color) * vol;
-    var b = blue(adjusted_color) * vol;
+    var r = red(adjusted_color);
+    var g = green(adjusted_color);
+    var b = blue(adjusted_color);
+    var a = alpha(adjusted_color) * vol;
     var adjusted_color = color(r, g, b);
     stroke(adjusted_color);
     quad(p[0], p[1], p[4], p[5], p[2], p[3], p[6], p[7]);
