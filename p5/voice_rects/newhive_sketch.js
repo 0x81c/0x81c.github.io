@@ -1,55 +1,70 @@
-var number_of_squiggles = 13;
-var number_of_points = 3;
+
+
+var number_of_quads = 13;
+var number_of_points = 4;
+var Quads = [];
+
+//set up gradient things
 var Y_AXIS = 1;
 var X_AXIS = 2;
 var axis;
+var gradient_c1, gradient_c2;
+
+//set up vals for random calculations
 var low_color = 30;
 var high_color = 255;
 var low_thick = 8;
 var high_thick = 30;
 var shake = 10;
-var gradient_c1, gradient_c2;
-var curves = [];
-var greeting;
+
+//audio stuff
+var input;
+var analyzer;
+
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
-  createCurves();
+
+  createQuads();
+
+  //gradient
   gradient_c1 = random_color();
   gradient_c2 = random_color();
   axis = floor(random(1, 3));
 
-  greeting = createElement('h2', 'what is your name?');
-  greeting.position(width / 2, height / 10);
-  greeting.html(div id="wrapper" style="text-align: center">    
-    <div id="yourdiv" style="display: inline-block;">You text</div>
-</div>)
+  //audio
+  input = new p5.AudioIn();
 
-  textAlign(CENTER)
-  textSize(50);
+  input.start();
 
+  console.log(input);
 }
 
 function draw() {
   background(255);
 
+  //get audio volume and map
+  var vol = input.getLevel();
+  console.log(vol);
+
   //draw gradient
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
 
-  for (squiggle = 0; squiggle < curves.length; squiggle++) {
-    var p = curves[squiggle].points
-    strokeWeight(curves[squiggle].thickness);
-    stroke(curves[squiggle].line_color);
-    bezier(p[0], p[1], mouseX + random(-shake, shake), mouseY + random(-shake, shake), p[4], p[5], p[2], p[3]);
+  //draw quads
+  for (quad_num = 0; quad_num < Quads.length; quad_num++) {
+    var p = Quads[quad_num].points
+    strokeWeight(Quads[quad_num].thickness);
+    stroke(Quads[quad_num].line_color);
+    quad(p[0] * vol, p[1] * vol, p[4], p[5], p[2], p[3], p[6], p[7]);
   }
 }
 
 
-function createCurves() {
+function createQuads() {
 
-  for (squiggle = 0; squiggle < number_of_squiggles; squiggle++) {
+  for (quad_num = 0; quad_num < number_of_quads; quad_num++) {
     
-    curves[squiggle] = {
+    Quads[quad_num] = {
       "points":[],
       "line_color":0,
       "thickness":0,
@@ -63,17 +78,14 @@ function createCurves() {
       else {
         axis = "y";
       }
-      curves[squiggle].points[coordinate] = random_pos(axis);
+      Quads[quad_num].points[coordinate] = random_pos(axis);
     }
 
     var thickness = random(low_thick, high_thick);
     var line_color = random_color();
 
-    curves[squiggle].thickness = thickness;
-    curves[squiggle].line_color = line_color;
-
-    strokeWeight(thickness);
-    stroke(line_color);
+    Quads[quad_num].thickness = thickness;
+    Quads[quad_num].line_color = line_color;
   }
 }
 
@@ -136,7 +148,7 @@ function setGradient(x, y, w, h, c1, c2, axis) {
 }
 
 function mousePressed() {
-  createCurves();
+  createQuads();
   gradient_c1 = random_color();
   gradient_c2 = random_color();
   axis = floor(random(1,3));
