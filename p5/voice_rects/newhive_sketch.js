@@ -70,7 +70,7 @@ function draw() {
     }
 
     strokeWeight(Quads[quad_num].thickness);
-    if (vol < 0.08) {
+    if (vol < 0.07) {
       console.log("nice!!!!!")
       vol = 0;
     }
