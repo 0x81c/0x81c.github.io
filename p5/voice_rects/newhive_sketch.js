@@ -70,7 +70,7 @@ function draw() {
     }
 
     strokeWeight(Quads[quad_num].thickness);
-    if (vol < 0.1) {
+    if (vol < 0.03) {
       vol = 0;
     }
     var adjusted_color = Quads[quad_num].line_color;
