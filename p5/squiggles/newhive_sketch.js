@@ -1,15 +1,22 @@
+var screen_width = window.innerWidth;
+var screen_height = window.innerHeight;
+
 var number_of_squiggles = 13;
 var number_of_points = 3;
+var curves = [];
+
+
+var low_color = 30;
+var high_color = 255;
+
+var low_thick = 8 / 580 * screen_width ;
+var high_thick = 30 / 580 * screen_width;
+var shake = 10 / 580 * screen_width;
+
+var gradient_c1, gradient_c2;
 var Y_AXIS = 1;
 var X_AXIS = 2;
 var axis;
-var low_color = 30;
-var high_color = 255;
-var low_thick = 8;
-var high_thick = 30;
-var shake = 10;
-var gradient_c1, gradient_c2;
-var curves = [];
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
