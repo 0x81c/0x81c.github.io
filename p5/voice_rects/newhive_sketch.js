@@ -51,7 +51,7 @@ function draw() {
 
   //draw quads
   for (quad_num = 0; quad_num < Quads.length; quad_num++) {
-    var p = Quads[quad_num].points;
+    var p = Quads[quad_num].points.slice(0);
 
     for (i = 0; i <= p.length; i++) {
       if (i % 2 != 0) {
