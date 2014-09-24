@@ -1,3 +1,6 @@
+var screen_width = window.innerWidth;
+var screen_height = window.innerHeight;
+
 var number_of_quads = 13;
 var number_of_points = 4;
 var Quads = [];
@@ -11,15 +14,15 @@ var gradient_c1, gradient_c2;
 //set up vals for random calculations
 var low_color = 30;
 var high_color = 255;
-var low_thick = 8;
-var high_thick = 30;
-var shake = 10;
+var low_thick = 8 / 580 * screen_width ;
+var high_thick = 30 / 580 * screen_width;
+var shake = 10 / 580 * screen_width;
 
 //audio stuff
 var input;
 
 function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
+  createCanvas(screen_width, screen_height);
 
   createQuads();
 

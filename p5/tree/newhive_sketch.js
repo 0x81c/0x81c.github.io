@@ -35,7 +35,7 @@ function setup() {
 function draw() {
   background(255)
 
-  fill(0);
+  fill(0, 0, 0, 125);
   rect(start_rect.x, start_rect.y, start_rect.w, start_rect.h);
   rect(end_rect.x, end_rect.y, end_rect.w, end_rect.h);
 
@@ -102,7 +102,8 @@ function initializeLine(x, y) {
 function stopDrawingCheck() {
   var mouse_pos = { x : mouseX, y : mouseY };
   if (inside_rect(mouse_pos, end_rect)) {
-    lines[length] = { x1 : end_rect.x, y1 : end_rect.y , x2 : end_rect.x, y2 : end_rect.y }
+    var last_rect = lines[lines.length]
+    lines[length] = { x1 : end_rect.x + end_rect.w / 2, y1 : end_rect.y + end_rect.h / 2 , x2 : end_rect.x + end_rect.w / 2, y2 : end_rect.y + end_rect.h / 2}
     drawing_line = false;
   }
 }
@@ -116,7 +117,7 @@ function inside_rect(position, rectangle) {
 
 
 function random_color() {
-function random_val() {
+  function random_val() {
     return random(low_color, high_color);
   }
   var r, g, b;

@@ -5,7 +5,6 @@ var number_of_squiggles = 13;
 var number_of_points = 3;
 var curves = [];
 
-
 var low_color = 30;
 var high_color = 255;
 
@@ -19,7 +18,7 @@ var X_AXIS = 2;
 var axis;
 
 function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
+  createCanvas(screen_width, screen_height);
   createCurves();
   gradient_c1 = random_color();
   gradient_c2 = random_color();
