@@ -16,7 +16,7 @@ var low_color = 30;
 var high_color = 255;
 var low_thick = 8 / 580 * screen_width ;
 var high_thick = 30 / 580 * screen_width;
-var shake = 10 / 580 * screen_width;
+var shake = 3 / 580 * screen_width;
 
 //audio stuff
 var input;
