@@ -9,6 +9,7 @@
 var screen_width = window.innerWidth;
 var screen_height = window.innerHeight;
 var theta = 0;
+var pressed = true;
 
 
 function preload() {
@@ -86,6 +87,12 @@ function mousePressed() {
     img4 = loadImage(dir + image_2 + ".jpg");
     img5 = loadImage(dir + image_3 + ".jpg");
   }
+}
+
+function windowResized() {
+  screen_width = window.innerWidth;
+  screen_height = window.innerHeight;
+  resizeCanvas(screen_width, screen_height);
 }
 
 function grab_arts(number_of_arts) {
