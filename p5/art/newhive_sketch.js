@@ -75,9 +75,9 @@ function mousePressed() {
 }
 
 function create_images() {
-  var image_1 = Math.floor(random(0, 12));
-  var image_2 = Math.floor(random(0, 12));
-  var image_3 = Math.floor(random(0, 12));
+  var image_1 = Math.floor(random(0, 28));
+  var image_2 = Math.floor(random(0, 28));
+  var image_3 = Math.floor(random(0, 28));
   var dir = ""
   img = loadImage(dir + image_1 + ".jpg");
   img_clone = loadImage(dir + image_2 + ".jpg");
