@@ -73,7 +73,7 @@ function create_collage(img1, img2, img3, ref_image, level) {
     }
   }
   img1.updatePixels();
-  image(img1, 0, 0);
+  image(img1, 0, 0, screen_width, screen_height);
 }
 
 function grab_arts(number_of_arts) {
