@@ -22,8 +22,9 @@ function setup() {
 function draw() {
   background(10, 10, 10);
   theta += Math.PI / 10;
-  var threshold = sin(theta);
-  var threshold = map(threshold, -1, 1, .4, .6);
+  // var threshold = sin(theta);
+  // var threshold = map(threshold, -1, 1, .4, .6);
+  var threshold = map(abs(width / 2 - mouseX), 0, width / 2, 0, 1);
   create_collage(img5, img4, img, img_clone, threshold);
 }
 
