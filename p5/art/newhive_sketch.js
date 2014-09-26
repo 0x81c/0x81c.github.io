@@ -1,7 +1,6 @@
 /* an art by goode bye / 0x81c
  * i will sue u if u try to rip off my algorithms!!! hackers
  * haha jk
- * im too poor to sue anyone
  * please donate to my life kickstarter
  * thanks
 */
@@ -13,14 +12,7 @@ var pressed = true;
 
 
 function preload() {
-  var image_1 = Math.floor(random(0, 12));
-  var image_2 = Math.floor(random(0, 12));
-  var image_3 = Math.floor(random(0, 12));
-  var dir = ""
-  img = loadImage(dir + image_1 + ".jpg");
-  img_clone = loadImage(dir + image_2 + ".jpg");
-  img4 = loadImage(dir + image3 + ".jpg");
-  img5 = loadImage(dir + image2 + ".jpg");
+  create_images();
 }
 
 function setup() {
@@ -78,15 +70,19 @@ function create_collage(img1, img2, img3, ref_image, level) {
 
 function mousePressed() {
   if (mouseX > 0 && mouseX < screen_width && mouseY > 0 && mouseY < screen_height) {
-    var image_1 = Math.floor(random(0, 12));
-    var image_2 = Math.floor(random(0, 12));
-    var image_3 = Math.floor(random(0, 12));
-    var dir = ""
-    img = loadImage(dir + image_1 + ".jpg");
-    img_clone = loadImage(dir + image_2 + ".jpg");
-    img4 = loadImage(dir + image_2 + ".jpg");
-    img5 = loadImage(dir + image_3 + ".jpg");
+    create_images();
   }
+}
+
+function create_images() {
+  var image_1 = Math.floor(random(0, 12));
+  var image_2 = Math.floor(random(0, 12));
+  var image_3 = Math.floor(random(0, 12));
+  var dir = ""
+  img = loadImage(dir + image_1 + ".jpg");
+  img_clone = loadImage(dir + image_2 + ".jpg");
+  img4 = loadImage(dir + image_2 + ".jpg");
+  img5 = loadImage(dir + image_3 + ".jpg");
 }
 
 function windowResized() {
