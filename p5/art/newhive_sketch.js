@@ -19,8 +19,8 @@ function preload() {
   var dir = ""
   img = loadImage(dir + image_1 + ".jpg");
   img_clone = loadImage(dir + image_2 + ".jpg");
-  img4 = loadImage(dir + image_2 + ".jpg");
-  img5 = loadImage(dir + image_3 + ".jpg");
+  img4 = loadImage(dir + image3 + ".jpg");
+  img5 = loadImage(dir + image2 + ".jpg");
 }
 
 function setup() {
