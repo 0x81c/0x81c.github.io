@@ -20,7 +20,6 @@ function preload() {
   img_clone = loadImage(dir + image_2 + ".jpg");
   img4 = loadImage(dir + image_2 + ".jpg");
   img5 = loadImage(dir + image_3 + ".jpg");
-
 }
 
 function setup() {
@@ -74,6 +73,19 @@ function create_collage(img1, img2, img3, ref_image, level) {
   }
   img1.updatePixels();
   image(img1, 0, 0, screen_width, screen_height);
+}
+
+function mousePressed() {
+  if (mouseX > 0 && mouseX < screen_width && mouseY > 0 && mouseY < screen_height) {
+    var image_1 = Math.floor(random(0, 12));
+    var image_2 = Math.floor(random(0, 12));
+    var image_3 = Math.floor(random(0, 12));
+    var dir = ""
+    img = loadImage(dir + image_1 + ".jpg");
+    img_clone = loadImage(dir + image_2 + ".jpg");
+    img4 = loadImage(dir + image_2 + ".jpg");
+    img5 = loadImage(dir + image_3 + ".jpg");
+  }
 }
 
 function grab_arts(number_of_arts) {
