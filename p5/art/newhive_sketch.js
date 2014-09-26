@@ -6,8 +6,8 @@
  * thanks
 */
 
-var screen_width = 1000;
-var screen_height = 700;
+var screen_width = window.innerWidth;
+var screen_height = window.innerHeight;
 var theta = 0;
 
 
