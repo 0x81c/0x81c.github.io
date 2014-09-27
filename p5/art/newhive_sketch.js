@@ -78,12 +78,12 @@ function mousePressed() {
 
 function create_images() {
   var image_1 = Math.floor(random(0, 28));
-  var image_2 = Math.floor(random(0, 28));
+  var image_2 = Math.floor(random(0, 17));
   var image_3 = Math.floor(random(0, 28));
   var dir = ""
   img_one = loadImage(dir + image_1 + ".jpg");
-  img_two_clone = loadImage(dir + image_2 + ".jpg");
-  img_two = loadImage(dir + image_2 + ".jpg");
+  img_two_clone = loadImage(dir + "gumby/gumby_" + image_2 + ".jpg");
+  img_two = loadImage(dir + "gumby/gumby_" + image_2 + ".jpg");
   img_three = loadImage(dir + image_3 + ".jpg");
 }
 
