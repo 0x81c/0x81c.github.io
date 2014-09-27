@@ -21,12 +21,12 @@ function setup() {
 
 function draw() {
   background(10, 10, 10);
-  theta += Math.PI / 10;
+  theta += Math.PI;
   // var threshold = sin(theta);
   // var threshold = map(threshold, -1, 1, .4, .6);
   var threshold = map(abs(width / 2 - mouseX), 0, width / 2, .25, .75);
-  var osc = map(sin(theta), -1, 1, -.02, .02) + random(-.008, .008);
-  create_collage(img5, img4, img, img_clone, threshold + osc);
+  var osc = map(sin(theta), -1, 1, -.02, .02) + random(-.008, .00);
+  create_collage(img_three, img_two, img_one, img_two_clone, threshold + osc);
 }
 
 function create_collage(img1, img2, img3, ref_image, level) {
@@ -81,10 +81,10 @@ function create_images() {
   var image_2 = Math.floor(random(0, 28));
   var image_3 = Math.floor(random(0, 28));
   var dir = ""
-  img = loadImage(dir + image_1 + ".jpg");
-  img_clone = loadImage(dir + image_2 + ".jpg");
-  img4 = loadImage(dir + image_2 + ".jpg");
-  img5 = loadImage(dir + image_3 + ".jpg");
+  img_one = loadImage(dir + image_1 + ".jpg");
+  img_two_clone = loadImage(dir + image_2 + ".jpg");
+  img_two = loadImage(dir + image_2 + ".jpg");
+  img_three = loadImage(dir + image_3 + ".jpg");
 }
 
 function windowResized() {
