@@ -24,7 +24,7 @@ function draw() {
   theta += Math.PI;
   // var threshold = sin(theta);
   // var threshold = map(threshold, -1, 1, .4, .6);
-  var threshold = map(abs(width / 2 - mouseX), 0, width / 2, .4, .8);
+  var threshold = map(abs(width / 2 - mouseX), 0, width / 2, .3, .75);
   var osc = map(sin(theta), -1, 1, -.02, .02) + random(-.008, .00);
   create_collage(img_three, img_two, img_one, img_two_clone, threshold + osc);
 }
