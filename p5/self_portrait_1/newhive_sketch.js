@@ -9,10 +9,13 @@ var screen_width = window.innerWidth;
 var screen_height = window.innerHeight;
 var theta = 0;
 var pressed = true;
+var capture;
 
 
 function preload() {
   create_images();
+  capture = createCapture(VIDEO);
+  capture.size(1000, 1000);
 }
 
 function setup() {
@@ -24,9 +27,9 @@ function draw() {
   theta += Math.PI;
   // var threshold = sin(theta);
   // var threshold = map(threshold, -1, 1, .4, .6);
-  var threshold = map(abs(width / 2 - mouseX), 0, width / 2, .25, .75);
+  var threshold = map(abs(width / 2 - mouseX), 0, width / 2, 0, 1);
   var osc = map(sin(theta), -1, 1, -.02, .02) + random(-.008, .00);
-  create_collage(img_three, img_two, img_one, img_two_clone, threshold + osc);
+  create_collage(capture, img_two, img_one, img_two_clone, threshold + osc);
 }
 
 function create_collage(img1, img2, img3, ref_image, level) {
@@ -77,13 +80,13 @@ function mousePressed() {
 }
 
 function create_images() {
-  var image_1 = Math.floor(random(0, 28));
-  var image_2 = Math.floor(random(0, 17));
-  var image_3 = Math.floor(random(0, 28));
+  var image_1 = Math.floor(random(0, 1));
+  var image_2 = Math.floor(random(1, 2));
+  var image_3 = Math.floor(random(2, 3));
   var dir = ""
   img_one = loadImage(dir + image_1 + ".jpg");
-  img_two_clone = loadImage(dir + "gumby/gumby_" + image_2 + ".jpg");
-  img_two = loadImage(dir + "gumby/gumby_" + image_2 + ".jpg");
+  img_two_clone = loadImage(dir + image_2 + ".jpg");
+  img_two = loadImage(dir + image_2 + ".jpg");
   img_three = loadImage(dir + image_3 + ".jpg");
 }
 
