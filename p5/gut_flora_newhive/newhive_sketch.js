@@ -22,6 +22,7 @@ function draw() {
   background(255);
 
   //draw gradient
+  strokeWeight(1);
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
   //draw maze
 
