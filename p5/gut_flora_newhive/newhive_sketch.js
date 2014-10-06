@@ -14,7 +14,7 @@ function setup() {
   createCanvas(screen_width, screen_height);
   gradient_c1 = random_color();
   gradient_c2 = random_color();
-  axis = floor(random(1, 3));
+  axis = Y_AXIS;
   spacing = width / 30
 }
 
