@@ -30,7 +30,7 @@ function draw() {
 
   for (i = 0; i < width; i += spacing) {
     for (j = 0; j < height; j += spacing) {
-      var high_or_low = random(.5, 1.5);
+      var high_or_low = floor(random(.5, 1.5));
       if (high_or_low > 0) {
         line(i, j + spacing, i + spacing, j);
       } else {
@@ -38,6 +38,7 @@ function draw() {
       }
     }
   }
+  noLoop();
 }
 
 
