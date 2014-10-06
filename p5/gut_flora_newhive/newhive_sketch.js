@@ -14,7 +14,7 @@ function setup() {
   createCanvas(screen_width, screen_height);
   gradient_c1 = random_color();
   gradient_c2 = random_color();
-  axis = Y_AXIS;
+  axis = floor(random(1, 3));
   spacing = width / 30
 }
 
@@ -22,7 +22,6 @@ function draw() {
   background(255);
 
   //draw gradient
-  strokeWeight(1);
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
   //draw maze
 
@@ -105,4 +104,5 @@ function windowResized() {
   screen_width = window.innerWidth;
   screen_height = window.innerHeight;
   resizeCanvas(screen_width, screen_height);
+  loop();
 }
