@@ -1,5 +1,5 @@
-var screen_width = window.innerWidth;
-var screen_height = window.innerHeight;
+var screen_width = ceil(window.innerWidth);
+var screen_height = ceil(window.innerHeight);
 
 var low_color = 30;
 var high_color = 255;
@@ -15,7 +15,7 @@ function setup() {
   gradient_c1 = random_color();
   gradient_c2 = random_color();
   axis = floor(random(1, 3));
-  spacing = width / 30
+  spacing = width / 50
 }
 
 function draw() {
@@ -101,8 +101,8 @@ function setGradient(x, y, w, h, c1, c2, axis) {
 }
 
 function windowResized() {
-  screen_width = window.innerWidth;
-  screen_height = window.innerHeight;
+  screen_width = ceil(window.innerWidth);
+  screen_height = ceil(window.innerHeight);
   resizeCanvas(screen_width, screen_height);
   loop();
 }
