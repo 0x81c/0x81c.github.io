@@ -1,5 +1,5 @@
-var screen_width = Math.ceil(window.innerWidth);
-var screen_height = Math.ceil(window.innerHeight);
+var screen_width = floor(window.innerWidth);
+var screen_height = floor(window.innerHeight);
 
 var low_color = 30;
 var high_color = 255;
