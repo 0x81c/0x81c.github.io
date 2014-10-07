@@ -1,5 +1,5 @@
-var screen_width = floor(window.innerWidth);
-var screen_height = floor(window.innerHeight);
+var screen_width;
+var screen_height;
 
 var low_color = 30;
 var high_color = 255;
@@ -11,6 +11,8 @@ var axis;
 var spacing;
 
 function setup() {
+  screen_width = ceil(window.innerWidth);
+  screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
   gradient_c1 = random_color();
   gradient_c2 = random_color();
