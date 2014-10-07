@@ -24,9 +24,10 @@ function draw() {
   background(255);
 
   //draw gradient
+  noSmooth();
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
   //draw maze
-
+  smooth();
   strokeWeight(width / 400);
   stroke(random_color());
 
