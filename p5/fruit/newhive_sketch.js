@@ -44,15 +44,18 @@ function create_single_fruit(fruit_pictures, mouse_x, mouse_y) {
 	var fruit_y;
 	var fruit_w = random(width / 2);
 	var fruit_h = random(width / 2);
+	var fruit_rot;
 
 	if (mouse_x) {
 		fruit_x = mouse_x - (fruit_w / 2);
 		fruit_y = mouse_y - (fruit_h / 2);
-		console.log("mouse!!!")
+		fruit_rot = 0;
+		console.log("mouse!!!");
 	} 
 	else {
 		fruit_x = random(width);
 		fruit_y = random(height);
+		fruit_rot = floor(random(2 * Math.PI));
 	}
 
 	var fruit = {
@@ -60,7 +63,7 @@ function create_single_fruit(fruit_pictures, mouse_x, mouse_y) {
 		y : fruit_y,
 		w : fruit_w,
 		h : fruit_h,
-		rot : floor(random(2 * Math.PI)),
+		rot : fruit_rot,
 		pic: fruit_pictures[floor(random(fruit_pictures.length))]
 	};
 
