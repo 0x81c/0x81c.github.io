@@ -69,7 +69,7 @@ function create_single_fruit(fruit_pictures, mouse_x, mouse_y) {
 		pic: fruit_pictures[floor(random(fruit_pictures.length))]
 	};
 
-	console.log(fruit.x);
+	console.log(fruit.x, fruit.y, fruit.w, fruit.h);
 	return fruit;
 }
 
