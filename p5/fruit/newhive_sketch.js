@@ -12,7 +12,7 @@ function setup() {
   screen_width = ceil(window.innerWidth);
   screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
-  fruits = create_all_fruits(floor(random(75, 100)), fruit_pix);
+  fruits = create_all_fruits(75, fruit_pix);
 }
 
 function draw() {
@@ -29,6 +29,7 @@ function draw() {
 
 function mousePressed() {
 	fruits.push(create_single_fruit(fruit_pix, mouseX, mouseY));
+  fruits.splice(0, 1);
 }
 
 function create_all_fruits(number_of_fruits, fruit_pictures) {
@@ -85,4 +86,5 @@ function windowResized() {
   screen_width = ceil(window.innerWidth);
   screen_height = ceil(window.innerHeight);
   resizeCanvas(screen_width, screen_height);
+  fruits = create_all_fruits(75, fruit_pix);
 }
