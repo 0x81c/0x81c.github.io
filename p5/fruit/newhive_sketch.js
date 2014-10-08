@@ -8,6 +8,7 @@ function preload() {
 }
 
 function setup() {
+  frameRate(18);
   screen_width = ceil(window.innerWidth);
   screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
@@ -22,7 +23,7 @@ function draw() {
 		rotate(fruit.rot);
 		image(fruit.pic, 0, 0, fruit.w, fruit.h);
 		pop();
-		fruit.rot += Math.PI / 30;
+		fruit.rot += Math.PI / 40;
 	}
 }
 
@@ -46,7 +47,7 @@ function create_single_fruit(fruit_pictures, mouse_x, mouse_y) {
 	var fruit_h = random(width / 2);
 	var fruit_rot;
 
-	if (mouse_x) {
+	if (mouse_x && mouse_y) {
 		fruit_x = mouse_x - (fruit_w / 2);
 		fruit_y = mouse_y - (fruit_h / 2);
 		fruit_rot = 0;
@@ -55,7 +56,7 @@ function create_single_fruit(fruit_pictures, mouse_x, mouse_y) {
 	else {
 		fruit_x = random(width);
 		fruit_y = random(height);
-		fruit_rot = floor(random(2 * Math.PI));
+		fruit_rot = random(2 * Math.PI);
 	}
 
 	var fruit = {
