@@ -39,7 +39,7 @@ function mousePressed() {
 
 function keyPressed() {
   if (key == "s") {
-    save("rotten_me.png")
+    save("rotten_me.png");
   }
 }
 
@@ -64,7 +64,6 @@ function create_single_fruit(fruit_pictures, mouse_x, mouse_y, chosen_fruit) {
 		fruit_x = mouse_x - (fruit_w / 2);
 		fruit_y = mouse_y - (fruit_h / 2);
 		fruit_rot = 0;
-		console.log("mouse!!!");
 	} 
 	else {
 		fruit_x = random(width);
@@ -87,8 +86,6 @@ function create_single_fruit(fruit_pictures, mouse_x, mouse_y, chosen_fruit) {
 		rot : fruit_rot,
 		pic: fruit_pic
 	};
-
-	console.log(fruit.x, fruit.y, fruit.w, fruit.h);
 	return fruit;
 }
 
