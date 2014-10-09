@@ -38,8 +38,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  console.log(key);
-  if (key == "s") {
+  if (key == "S") {
     save("rotten_me.png");
   }
 }
