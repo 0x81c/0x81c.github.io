@@ -37,6 +37,12 @@ function mousePressed() {
   next_fruit = fruit_pix[floor(random(fruit_pix.length))];
 }
 
+function keyPressed() {
+  if (key == "s") {
+    save("rotten_me.png")
+  }
+}
+
 function create_all_fruits(number_of_fruits, fruit_pictures) {
 	var fruit_array = []
 	for (i = 0; i < number_of_fruits; i++) {
