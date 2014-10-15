@@ -1,5 +1,5 @@
-var screen_width = 3000;
-var screen_height = 3000;
+var screen_width;
+var screen_height;
 
 var number_of_squiggles = 13;
 var number_of_points = 3;
@@ -18,6 +18,8 @@ var X_AXIS = 2;
 var axis;
 
 function setup() {
+  screen_width = ceil(window.innerWidth);
+  screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
   createCurves();
   gradient_c1 = random_color();
@@ -42,8 +44,7 @@ function draw() {
     ellipse(p[0], p[1], curves[squiggle].thickness / 2, curves[squiggle].thickness / 2);
     ellipse(p[2], p[3], curves[squiggle].thickness / 2, curves[squiggle].thickness / 2);
   }
-  save("squiggles.png");
-  noLoop();
+  loop();
 }
 
 
