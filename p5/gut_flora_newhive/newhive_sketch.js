@@ -12,17 +12,24 @@ var spacing;
 var maze_array;
 var strawberry;
 
+var maze_color;
+
 function setup() {
   screen_width = ceil(window.innerWidth);
   screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
   gradient_c1 = random_color();
   gradient_c2 = random_color();
+  maze_color = random_color();
   axis = floor(random(1, 3));
-  spacing = width / 50;
+  spacing = width / 40;
   maze_array = make_maze_array(spacing);
   strawberry = loadImage("strawberry.png")
 
+
+}
+
+function draw() {
   background(255);
   //draw gradient
   noSmooth();
@@ -30,18 +37,13 @@ function setup() {
   //draw maze
   smooth();
   strokeWeight(width / 400);
-  stroke(random_color());
+  stroke(maze_color);
   draw_maze(maze_array);
-
-}
-
-function draw() {
-  imageMode(CENTER);
-  image(strawberry, mouseX, mouseY, width / 25, width / 25);
-  loop();
 }
 
 function draw_maze(maze) {
+
+  var radius = spacing / 2;
 
   for ( i = 0; i < maze.length; i++ ) {
 
@@ -55,10 +57,13 @@ function draw_maze(maze) {
       min_y = local_line.y1;
       max_y = local_line.y2;
     }
-    if (mouseX > local_line.x1 && mouseX < local_line.x2 && mouseY > min_y && mouseY < max_y) {
+    if (mouseX > local_line.x1 - radius && mouseX < local_line.x2 + radius && mouseY > min_y - radius
+      && mouseY < max_y + radius) {// && local_line.not_rolled_over) {
       line(local_line.x1, local_line.y2, local_line.x2, local_line.y1);
+      //local_line
+    } else {
+      line(local_line.x1, local_line.y1, local_line.x2, local_line.y2);
     }
-    line(local_line.x1, local_line.y1, local_line.x2, local_line.y2);
   }
 }
 
