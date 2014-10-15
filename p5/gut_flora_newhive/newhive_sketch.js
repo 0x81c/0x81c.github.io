@@ -42,7 +42,7 @@ function draw_maze(maze) {
   var radius = spacing;
 
   for ( i = 0; i < maze.length; i++ ) {
-
+    strokeWeight(width / 400);
     var local_line = maze[i];
     var max_y, min_y;
 
@@ -55,6 +55,7 @@ function draw_maze(maze) {
     }
     if (mouseX > local_line.x1 - radius && mouseX < local_line.x2 + radius && mouseY > min_y - radius
       && mouseY < max_y + radius) {
+      strokeWeight(width / 350);
       if (!local_line.mouse_over) {
           var y1 = local_line.y2;
           var y2 = local_line.y1;

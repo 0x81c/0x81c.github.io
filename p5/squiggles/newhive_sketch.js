@@ -1,5 +1,5 @@
-var screen_width = window.innerWidth;
-var screen_height = window.innerHeight;
+var screen_width = 3000;
+var screen_height = 3000;
 
 var number_of_squiggles = 13;
 var number_of_points = 3;
@@ -36,7 +36,14 @@ function draw() {
     strokeWeight(curves[squiggle].thickness);
     stroke(curves[squiggle].line_color);
     bezier(p[0], p[1], mouseX + random(-shake, shake), mouseY + random(-shake, shake), p[4], p[5], p[2], p[3]);
+    ellipseMode(RADIUS);
+    fill(curves[squiggle].line_color);
+    strokeWeight(0);
+    ellipse(p[0], p[1], curves[squiggle].thickness / 2, curves[squiggle].thickness / 2);
+    ellipse(p[2], p[3], curves[squiggle].thickness / 2, curves[squiggle].thickness / 2);
   }
+  save("squiggles.png");
+  noLoop();
 }
 
 
