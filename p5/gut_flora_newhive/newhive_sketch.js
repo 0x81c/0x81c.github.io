@@ -34,11 +34,12 @@ function draw() {
   strokeWeight(width / 400);
   stroke(maze_color);
   draw_maze(maze_array);
+  imageMode(CENTER);
 }
 
 function draw_maze(maze) {
 
-  var radius = spacing / 2;
+  var radius = spacing;
 
   for ( i = 0; i < maze.length; i++ ) {
 
@@ -53,12 +54,18 @@ function draw_maze(maze) {
       max_y = local_line.y2;
     }
     if (mouseX > local_line.x1 - radius && mouseX < local_line.x2 + radius && mouseY > min_y - radius
-      && mouseY < max_y + radius) {// && local_line.not_rolled_over) {
-      line(local_line.x1, local_line.y2, local_line.x2, local_line.y1);
-      //local_line
+      && mouseY < max_y + radius) {
+      if (!local_line.mouse_over) {
+          var y1 = local_line.y2;
+          var y2 = local_line.y1;
+          local_line.y1 = y1;
+          local_line.y2 = y2;
+          local_line.mouse_over = true;
+      }
     } else {
-      line(local_line.x1, local_line.y1, local_line.x2, local_line.y2);
+      local_line.mouse_over = false;  
     }
+    line(local_line.x1, local_line.y1, local_line.x2, local_line.y2);
   }
 }
 
