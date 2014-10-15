@@ -10,8 +10,6 @@ var X_AXIS = 2;
 var axis;
 var spacing;
 var maze_array;
-var strawberry;
-
 var maze_color;
 
 function setup() {
@@ -22,11 +20,8 @@ function setup() {
   gradient_c2 = random_color();
   maze_color = random_color();
   axis = floor(random(1, 3));
-  spacing = width / 40;
+  spacing = width / 50;
   maze_array = make_maze_array(spacing);
-  strawberry = loadImage("strawberry.png")
-
-
 }
 
 function draw() {
