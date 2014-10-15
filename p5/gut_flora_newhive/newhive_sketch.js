@@ -9,6 +9,8 @@ var Y_AXIS = 1;
 var X_AXIS = 2;
 var axis;
 var spacing;
+var maze_array;
+var strawberry;
 
 function setup() {
   screen_width = ceil(window.innerWidth);
@@ -18,11 +20,10 @@ function setup() {
   gradient_c2 = random_color();
   axis = floor(random(1, 3));
   spacing = width / 50;
-}
+  maze_array = make_maze_array(spacing);
+  strawberry = loadImage("strawberry.png")
 
-function draw() {
   background(255);
-
   //draw gradient
   noSmooth();
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
@@ -30,21 +31,62 @@ function draw() {
   smooth();
   strokeWeight(width / 400);
   stroke(random_color());
+  draw_maze(maze_array);
 
-  for (i = 0; i < width; i += spacing) {
-    for (j = 0; j < height; j += spacing) {
-      var high_or_low = floor(random(.5, 1.5));
-      if (high_or_low > 0) {
-        line(i, j + spacing, i + spacing, j);
-      } else {
-        line(i, j, i + spacing, j + spacing);
-      }
-    }
-  }
-  noLoop();
 }
 
+function draw() {
+  imageMode(CENTER);
+  image(strawberry, mouseX, mouseY, width / 25, width / 25);
+  loop();
+}
 
+function draw_maze(maze) {
+
+  for ( i = 0; i < maze.length; i++ ) {
+
+    var local_line = maze[i];
+    var max_y, min_y;
+
+    if (local_line.y1 > local_line.y2) {
+      min_y = local_line.y2;
+      max_y = local_line.y1;
+    } else {
+      min_y = local_line.y1;
+      max_y = local_line.y2;
+    }
+    if (mouseX > local_line.x1 && mouseX < local_line.x2 && mouseY > min_y && mouseY < max_y) {
+      line(local_line.x1, local_line.y2, local_line.x2, local_line.y1);
+    }
+    line(local_line.x1, local_line.y1, local_line.x2, local_line.y2);
+  }
+}
+
+function make_maze_array() {
+  var local_maze_array = [];
+  for (i = 0; i < width; i += spacing) {
+    for (j = 0; j < height; j += spacing) {
+
+      var local_line = {
+        moused_over: false,
+        x1: i,
+        x2: i + spacing,
+      };
+
+      //dice roll!
+      var high_or_low = floor(random(0.5, 1.5));
+      if (high_or_low > 0) {
+        local_line.y1 = j + spacing;
+        local_line.y2 = j;
+      } else {
+        local_line.y1 = j;
+        local_line.y2 = j + spacing;
+      }
+      local_maze_array.push(local_line);
+    }
+  }
+  return local_maze_array;
+}
 
 function random_color() {
   function random_val() {
@@ -59,7 +101,7 @@ function random_color() {
 
   if (r < threshold && g < threshold && b < threshold) {
     var coin_toss = floor(random(0,3));
-    if (coin_toss == 0) {
+    if (coin_toss === 0) {
       r = random_val(200, 255);
     } 
     else if (coin_toss == 1) {
@@ -69,7 +111,7 @@ function random_color() {
       b = random_val(200, 255);
     }
   }
-  return color(r, g, b)
+  return color(r, g, b);
 }
 
 function random_pos(axis) {
