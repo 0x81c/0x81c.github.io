@@ -8,9 +8,9 @@ var curves = [];
 var low_color = 30;
 var high_color = 255;
 
-var low_thick = 8 / 580 * screen_width ;
-var high_thick = 30 / 580 * screen_width;
-var shake = 10 / 580 * screen_width;
+var low_thick;
+var high_thick;
+var shake;
 
 var gradient_c1, gradient_c2;
 var Y_AXIS = 1;
@@ -21,6 +21,11 @@ function setup() {
   screen_width = ceil(window.innerWidth);
   screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
+
+  low_thick = 8 / 580 * screen_width;
+  high_thick = 30 / 580 * screen_width;
+  shake = 10 / 580 * screen_width;
+
   createCurves();
   gradient_c1 = random_color();
   gradient_c2 = random_color();
@@ -29,12 +34,11 @@ function setup() {
 
 function draw() {
   background(255);
-
   //draw gradient
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
 
   for (squiggle = 0; squiggle < curves.length; squiggle++) {
-    var p = curves[squiggle].points
+    var p = curves[squiggle].points;
     strokeWeight(curves[squiggle].thickness);
     stroke(curves[squiggle].line_color);
     bezier(p[0], p[1], mouseX + random(-shake, shake), mouseY + random(-shake, shake), p[4], p[5], p[2], p[3]);
@@ -44,7 +48,7 @@ function draw() {
     ellipse(p[0], p[1], curves[squiggle].thickness / 2, curves[squiggle].thickness / 2);
     ellipse(p[2], p[3], curves[squiggle].thickness / 2, curves[squiggle].thickness / 2);
   }
-  loop();
+  //loop();
 }
 
 
@@ -74,9 +78,6 @@ function createCurves() {
 
     curves[squiggle].thickness = thickness;
     curves[squiggle].line_color = line_color;
-
-    strokeWeight(thickness);
-    stroke(line_color);
   }
 }
 

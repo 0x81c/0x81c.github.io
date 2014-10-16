@@ -32,7 +32,6 @@ function draw() {
   //draw maze
   smooth();
   strokeWeight(width / 400);
-  stroke(maze_color);
   draw_maze(maze_array);
   imageMode(CENTER);
 }
@@ -66,8 +65,14 @@ function draw_maze(maze) {
     } else {
       local_line.mouse_over = false;  
     }
+    stroke(maze_color);
     line(local_line.x1, local_line.y1, local_line.x2, local_line.y2);
+    rectMode(CENTER);
+    noStroke();
+    rect(local_line.x1, local_line.y1, width / (350 * 2), width / (350 * 2));
+    rect(local_line.x2, local_line.y2, width / (350 * 2), width / (350 * 2));
   }
+  rectMode(CORNER);
 }
 
 function make_maze_array() {
