@@ -5,8 +5,8 @@
  * thanks
 */
 
-var screen_width = 1080;
-var screen_height = 720;
+var screen_width = window.innerWidth;
+var screen_height = window.innerHeight;
 var red, yellow, blue;
 var triangle_max_length = screen_width / 42;
 var triangle_inc_length = triangle_max_length / 20;
@@ -17,10 +17,10 @@ var frame_count = 0;
 var num_of_prev_frames = 0;
 var chosen_pixels;
 var triangles;
-var rach;
+var capture;
 
 function preload() {
-  frames = loadSequence(1);
+  //frames = loadSequence(1);
 }
 
 function setup() {
@@ -28,13 +28,17 @@ function setup() {
   chosen_pixels = choosePixels();
   triangles = createTriangles(chosen_pixels);
   anim_length = frames.length;
+  capture = createCapture(VIDEO);
+  capture.size(width, height);
+  capture.hide()
 }
 
 function draw() {
   chosen_pixels = choosePixels();
   triangles = createTriangles(chosen_pixels);
 
-  image(frames[frame_count], 0, 0, width, height);
+  //image(frames[frame_count], 0, 0, width, height);
+  image(capture, 0, 0);
 
   for (var i = 0; i < chosen_pixels.length; i++) {
     chosen_pixel = chosen_pixels[i];
@@ -63,15 +67,15 @@ function draw() {
     triangle(tri.x1, tri.y1, tri.x2, tri.y2, tri.x3, tri.y3);
     pop();
   }
-
+/*
   num_of_prev_frames += 1;
   frame_count += 1;
   if (frame_count % anim_length === 0) {
     console.log("frame count: " + frame_count);
     frames = loadSequence(num_of_prev_frames);
     frame_count = 0;
-  }
-  save("rach_" + pad(num_of_prev_frames, 5) + ".jpg")
+  }*/
+  //save("rach_" + pad(num_of_prev_frames, 5) + ".jpg")
 }
 
 function createTriangles(pixel_array) {
@@ -114,4 +118,12 @@ function pad(num, size) {
     var s = num+"";
     while (s.length < size) s = "0" + s;
     return s;
+}
+
+function keyPressed() {
+  console.log(key);
+  console.log(keyCode);
+  if (key === "S") {
+    save();
+  }
 }
