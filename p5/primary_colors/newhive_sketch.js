@@ -37,7 +37,7 @@ function draw() {
 
   triangle_max_length = map(mouseX, 0, width, screen_width / 42, screen_width / 42 + screen_width / 42);
   chosen_pixels = choosePixels();
-  triangles = createTriangles(chosen_pixels);
+  //triangles = createTriangles(chosen_pixels);
 
   //image(frames[frame_count], 0, 0, width, height);
   image(capture, 0, 0);
@@ -54,14 +54,26 @@ function draw() {
     fill(pixel_color, 255);
     noStroke();
     translate(x, y);
-    var tri = triangles[i];
+    //var tri = triangles[i];
 
-    for (var key in tri) {
+
+
+    /*for (var key in tri) {
       if (tri.hasOwnProperty(key)) {
         if (key !== "rot") {
           //tri[key] = tri[key] + ceil(random(-triangle_inc_length, triangle_inc_length));
         }
       }
+    }*/
+
+    var tri = {
+      x1: random(-triangle_max_length, triangle_max_length),
+      y1: random(-triangle_max_length, triangle_max_length),
+      x2: random(-triangle_max_length, triangle_max_length),
+      y2: random(-triangle_max_length, triangle_max_length),
+      x3: random(-triangle_max_length, triangle_max_length),
+      y3: random(-triangle_max_length, triangle_max_length),
+      rot: random(TWO_PI)
     }
 
 
@@ -127,11 +139,5 @@ function keyPressed() {
   console.log(keyCode);
   if (key === "S") {
     save();
-  }
-  if (keyCode === UP_ARROW) {
-    triangle_max_length += 10;
-  }
-  if (keyCode === DOWN_ARROW) {
-    triangle_max_length -= 10;
   }
 }
