@@ -34,6 +34,8 @@ function setup() {
 }
 
 function draw() {
+
+  triangle_max_length = map(mouseX, 0, width, screen_width / 42, screen_width / 42 + screen_width / 42);
   chosen_pixels = choosePixels();
   triangles = createTriangles(chosen_pixels);
 
@@ -125,5 +127,11 @@ function keyPressed() {
   console.log(keyCode);
   if (key === "S") {
     save();
+  }
+  if (keyCode === UP_ARROW) {
+    triangle_max_length += 10;
+  }
+  if (keyCode === DOWN_ARROW) {
+    triangle_max_length -= 10;
   }
 }
