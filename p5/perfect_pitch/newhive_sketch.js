@@ -31,9 +31,14 @@ function setup() {
 
   fft = new p5.FFT();
   osc.start();
+
 }
 
 function draw() {
+  textFont("Raleway");
+  textSize(width / 11);
+  textAlign(CENTER);
+  
   background(255);
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
 
@@ -61,8 +66,7 @@ function draw() {
     var note = find_real_note_by_steps_from_middle_a(steps);
     var freq_deviation = hz_from_target_note(freq, steps);
     var formatted_deviation = format_deviation(freq_deviation);
-    textSize(width / 10);
-    textAlign(CENTER)
+    strokeWeight(1);
     text(note, width / 2, height * 5 / 8);
     if (formatted_deviation.length > 0) {
       text(formatted_deviation + "hz", width / 2, height * 7 / 8);
@@ -73,8 +77,7 @@ function draw() {
   }
   else {
     osc.amp(0);
-    textSize(width / 10);
-    textAlign(CENTER)
+    strokeWeight(1);
     text("click to mute/unmute!", width / 2, height * 7 / 8);
   }
 }
