@@ -18,9 +18,11 @@ var num_of_prev_frames = 0;
 var chosen_pixels;
 var triangles;
 var capture;
+var rach;
 
 function preload() {
   //frames = loadSequence(1);
+  rach = loadImage("rachel/out_00001.jpg")
 }
 
 function setup() {
@@ -40,6 +42,7 @@ function draw() {
   //triangles = createTriangles(chosen_pixels);
 
   //image(frames[frame_count], 0, 0, width, height);
+  tint(255, 255, 30);
   image(capture, 0, 0);
 
   for (var i = 0; i < chosen_pixels.length; i++) {
