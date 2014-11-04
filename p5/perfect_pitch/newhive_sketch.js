@@ -74,7 +74,7 @@ function draw() {
       text(formatted_deviation + "hz", width / 2, height * 9 / 10);
     }
     else {
-      text("RIGHT ON!", width / 2, height * 7 / 8);
+      text("RIGHT ON!", width / 2, height * 9 / 10);
     }
   }
   else {
