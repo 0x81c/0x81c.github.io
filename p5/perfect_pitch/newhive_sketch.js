@@ -38,7 +38,7 @@ function draw() {
   textFont("Raleway");
   textSize(width / 11);
   textAlign(CENTER);
-  
+
   background(255);
   setGradient(0, 0, width, height, gradient_c1, gradient_c2, axis);
 
@@ -50,7 +50,7 @@ function draw() {
   beginShape();
   for (var i = 0; i < waveform.length; i++){
     var x = map(i, 0, waveform.length, 0, width);
-    var y = map(waveform[i], 0, 256, height / 2, 0);
+    var y = map(waveform[i], 0, 256, height * 3 / 4, 0);
     vertex(x, y);
   }
   endShape();
@@ -67,9 +67,11 @@ function draw() {
     var freq_deviation = hz_from_target_note(freq, steps);
     var formatted_deviation = format_deviation(freq_deviation);
     strokeWeight(1);
-    text(note, width / 2, height * 5 / 8);
+    textSize(width / 8);
+    text(note, width / 2, height * 8 / 10);
+    textSize(width / 20);
     if (formatted_deviation.length > 0) {
-      text(formatted_deviation + "hz", width / 2, height * 7 / 8);
+      text(formatted_deviation + "hz", width / 2, height * 9 / 10);
     }
     else {
       text("RIGHT ON!", width / 2, height * 7 / 8);
