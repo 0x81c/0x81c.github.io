@@ -26,7 +26,7 @@ function setup() {
 
   axis = floor(random(1, 3));
 
-  osc = new p5.TriOsc(); // set frequency and type
+  osc = new p5.SinOsc(); // set frequency and type
   osc.amp(0);
 
   fft = new p5.FFT();
@@ -140,4 +140,11 @@ function setGradient(x, y, w, h, c1, c2, axis) {
       line(i, y, i, y+h);
     }
   }
+}
+
+
+function windowResized() {
+  screen_width = window.innerWidth;
+  screen_height = window.innerHeight;
+  resizeCanvas(screen_width, screen_height);
 }
