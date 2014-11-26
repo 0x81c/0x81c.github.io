@@ -23,7 +23,7 @@ function setup() {
 }
 
 function draw() {
-  background(0, 0, 0);
+  background(255, 255, 255);
   noStroke();
   rectMode(CENTER);
 
@@ -51,6 +51,6 @@ function draw() {
 
   pop();
   
-  baseRectWidth = width;
+  baseRectWidth = height;
   baseRectHeight = height / 4;
 }
