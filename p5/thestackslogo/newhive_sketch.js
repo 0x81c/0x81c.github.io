@@ -10,7 +10,7 @@ var black;
 
 
 function setup() {
-  screen_width = ceil(window.innerWidth);
+  screen_width = ceil(window.innerHeight);
   screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
   baseRectWidth = width;
