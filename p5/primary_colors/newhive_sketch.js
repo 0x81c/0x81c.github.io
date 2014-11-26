@@ -1,4 +1,4 @@
-/* an art by goode bye / 0x81c
+/* an art by goode bye
  * i will sue u if u try to rip off my algorithms!!! hackers
  * haha jk
  * please donate to my life kickstarter

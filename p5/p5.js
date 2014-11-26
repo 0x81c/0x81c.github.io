@@ -1,4 +1,4 @@
-/*! p5.js v0.3.7 September 19, 2014 */
+/*! p5.js v0.3.12 November 23, 2014 */
 var shim = function (require) {
     window.requestDraw = function () {
       return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback, element) {
@@ -98,7 +98,7 @@ var core = function (require, shim, constants) {
       this._updateInterval = 0;
       this._isGlobal = false;
       this._loop = true;
-      this.styles = [];
+      this._styles = [];
       this._defaultCanvasSize = {
         width: 100,
         height: 100
@@ -119,11 +119,20 @@ var core = function (require, shim, constants) {
         'touchend': null,
         'resize': null
       };
+      this._loadingScreenId = 'p5_loading';
       this._start = function () {
         if (this._userNode) {
           if (typeof this._userNode === 'string') {
             this._userNode = document.getElementById(this._userNode);
           }
+        }
+        this._loadingScreen = document.getElementById(this._loadingScreenId);
+        if (!this._loadingScreen) {
+          this._loadingScreen = document.createElement('loadingDiv');
+          this._loadingScreen.innerHTML = 'loading...';
+          this._loadingScreen.style.position = 'absolute';
+          var node = this._userNode || document.body;
+          node.appendChild(this._loadingScreen);
         }
         this.createCanvas(this._defaultCanvasSize.width, this._defaultCanvasSize.height, true);
         var userPreload = this.preload || window.preload;
@@ -168,14 +177,10 @@ var core = function (require, shim, constants) {
         if (typeof context.setup === 'function') {
           context.setup();
         }
-        var reg = new RegExp(/(^|\s)p5_hidden(?!\S)/g);
-        var canvases = document.getElementsByClassName('p5_hidden');
-        for (var i = 0; i < canvases.length; i++) {
-          var k = canvases[i];
-          k.style.visibility = '';
-          k.className = k.className.replace(reg, '');
-        }
+        this.canvas.style.visibility = '';
+        this.canvas.className = this.canvas.className.replace('p5_hidden', '');
         this._setupDone = true;
+        this._loadingScreen.parentNode.removeChild(this._loadingScreen);
       }.bind(this);
       this._draw = function () {
         var userSetup = this.setup || window.setup;
@@ -344,19 +349,19 @@ var p5Color = function (require, core, constants) {
       if (vals instanceof Array) {
         this.rgba = vals;
       } else {
-        var norm = p5.Color.getNormalizedColor.apply(pInst, vals);
+        var formatted = p5.Color._getFormattedColor.apply(pInst, vals);
         if (pInst._colorMode === constants.HSB) {
-          this.hsba = norm;
-          this.rgba = p5.Color.getRGB(this.hsba);
+          this.hsba = formatted;
+          this.rgba = p5.Color._getRGB(formatted);
         } else {
-          this.rgba = norm;
+          this.rgba = formatted;
         }
       }
-      this.colorString = p5.Color.getColorString(this.rgba);
+      var c = p5.Color._normalizeColorArray.call(pInst, this.rgba);
+      this.colorString = p5.Color._getColorString(c);
+      return this;
     };
-    p5.Color.getNormalizedColor = function () {
-      var isRGB = this._colorMode === constants.RGB;
-      var maxArr = isRGB ? this._maxRGB : this._maxHSB;
+    p5.Color._getFormattedColor = function () {
       if (arguments[0] instanceof Array) {
         return p5.Color.getNormalizedColor.apply(this, arguments[0]);
       }
@@ -365,20 +370,16 @@ var p5Color = function (require, core, constants) {
         r = arguments[0];
         g = arguments[1];
         b = arguments[2];
-        a = typeof arguments[3] === 'number' ? arguments[3] : maxArr[3];
+        a = typeof arguments[3] === 'number' ? arguments[3] : 255;
       } else {
-        if (isRGB) {
+        if (this._colorMode === constants.RGB) {
           r = g = b = arguments[0];
         } else {
           r = b = arguments[0];
           g = 0;
         }
-        a = typeof arguments[1] === 'number' ? arguments[1] : maxArr[3];
+        a = typeof arguments[1] === 'number' ? arguments[1] : 255;
       }
-      r *= 255 / maxArr[0];
-      g *= 255 / maxArr[1];
-      b *= 255 / maxArr[2];
-      a *= 255 / maxArr[3];
       return [
         r,
         g,
@@ -386,7 +387,16 @@ var p5Color = function (require, core, constants) {
         a
       ];
     };
-    p5.Color.getRGB = function (hsba) {
+    p5.Color._normalizeColorArray = function (arr) {
+      var isRGB = this._colorMode === constants.RGB;
+      var maxArr = isRGB ? this._maxRGB : this._maxHSB;
+      arr[0] *= 255 / maxArr[0];
+      arr[1] *= 255 / maxArr[1];
+      arr[2] *= 255 / maxArr[2];
+      arr[3] *= 255 / maxArr[3];
+      return arr;
+    };
+    p5.Color._getRGB = function (hsba) {
       var h = hsba[0];
       var s = hsba[1];
       var v = hsba[2];
@@ -447,7 +457,7 @@ var p5Color = function (require, core, constants) {
       }
       return RGBA;
     };
-    p5.Color.getHSB = function (rgba) {
+    p5.Color._getHSB = function (rgba) {
       var var_R = rgba[0] / 255;
       var var_G = rgba[1] / 255;
       var var_B = rgba[2] / 255;
@@ -486,24 +496,39 @@ var p5Color = function (require, core, constants) {
         rgba[3]
       ];
     };
-    p5.Color.getColorString = function (a) {
+    p5.Color._getColorString = function (a) {
       for (var i = 0; i < 3; i++) {
         a[i] = Math.floor(a[i]);
       }
       var alpha = typeof a[3] !== 'undefined' ? a[3] / 255 : 1;
       return 'rgba(' + a[0] + ',' + a[1] + ',' + a[2] + ',' + alpha + ')';
     };
-    p5.Color.getColor = function () {
+    p5.Color._getCanvasColor = function () {
       if (arguments[0] instanceof p5.Color) {
-        return arguments[0].colorString;
-      } else if (arguments[0] instanceof Array) {
-        return p5.Color.getColorString(arguments[0]);
-      } else {
-        var c = p5.Color.getNormalizedColor.apply(this, arguments);
-        if (this._colorMode === constants.HSB) {
-          c = p5.Color.getRGB(c);
+        if (arguments.length === 1) {
+          return arguments[0].colorString;
+        } else {
+          var c = arguments[0].rgba;
+          c[3] = arguments[1];
+          c = p5.Color._normalizeColorArray.call(this, c);
+          return p5.Color._getColorString(c);
         }
-        return p5.Color.getColorString(c);
+      } else if (arguments[0] instanceof Array) {
+        if (arguments.length === 1) {
+          return p5.Color._getColorString(arguments[0]);
+        } else {
+          var isRGB = this._colorMode === constants.RGB;
+          var maxA = isRGB ? this._maxRGB[3] : this._maxHSB[3];
+          arguments[0][3] = 255 * arguments[1] / maxA;
+          return p5.Color._getColorString(arguments[0]);
+        }
+      } else {
+        var e = p5.Color._getFormattedColor.apply(this, arguments);
+        e = p5.Color._normalizeColorArray.call(this, e);
+        if (this._colorMode === constants.HSB) {
+          e = p5.Color._getRGB(e);
+        }
+        return p5.Color._getColorString(e);
       }
     };
     return p5.Color;
@@ -524,39 +549,46 @@ var p5Element = function (require, core) {
         p = p.elt;
       }
       p.appendChild(this.elt);
+      return this;
     };
     p5.Element.prototype.id = function (id) {
       this.elt.id = id;
+      return this;
     };
     p5.Element.prototype.class = function (c) {
       this.elt.className += ' ' + c;
+      return this;
     };
     p5.Element.prototype.mousePressed = function (fxn) {
       attachListener('mousedown', fxn, this);
+      return this;
     };
     p5.Element.prototype.mouseWheel = function (fxn) {
       attachListener('mousewheel', fxn, this);
+      return this;
     };
     p5.Element.prototype.mouseReleased = function (fxn) {
       attachListener('mouseup', fxn, this);
+      return this;
     };
     p5.Element.prototype.mouseClicked = function (fxn) {
       attachListener('click', fxn, this);
+      return this;
     };
     p5.Element.prototype.mouseMoved = function (fxn) {
       attachListener('mousemove', fxn, this);
+      return this;
     };
     p5.Element.prototype.mouseOver = function (fxn) {
       attachListener('mouseover', fxn, this);
+      return this;
     };
     p5.Element.prototype.mouseOut = function (fxn) {
       attachListener('mouseout', fxn, this);
+      return this;
     };
     function attachListener(ev, fxn, ctx) {
-      var _this = ctx;
-      var f = function (e) {
-        fxn(e, _this);
-      };
+      var f = fxn.bind(ctx);
       ctx.elt.addEventListener(ev, f, false);
       ctx._events[ev] = f;
     }
@@ -568,11 +600,13 @@ var p5Element = function (require, core) {
 var p5Graphics = function (require, core, constants) {
     var p5 = core;
     var constants = constants;
-    p5.Graphics = function (elt, pInst) {
+    p5.Graphics = function (elt, pInst, isMainCanvas) {
       p5.Element.call(this, elt, pInst);
       this.canvas = elt;
       this.drawingContext = this.canvas.getContext('2d');
-      if (this._pInst) {
+      this._pInst = pInst;
+      if (isMainCanvas) {
+        this._isMainCanvas = true;
         this._pInst._setProperty('_curElement', this);
         this._pInst._setProperty('canvas', this.canvas);
         this._pInst._setProperty('drawingContext', this.drawingContext);
@@ -580,20 +614,28 @@ var p5Graphics = function (require, core, constants) {
         this._pInst._setProperty('height', this.height);
       } else {
         this.canvas.style.display = 'none';
+        this._styles = [];
       }
+    };
+    p5.Graphics.prototype = Object.create(p5.Element.prototype);
+    p5.Graphics.prototype._applyDefaults = function () {
       this.drawingContext.fillStyle = '#FFFFFF';
       this.drawingContext.strokeStyle = '#000000';
       this.drawingContext.lineCap = constants.ROUND;
       this.drawingContext.font = 'normal 12px sans-serif';
     };
-    p5.Graphics.prototype = Object.create(p5.Element.prototype);
     p5.Graphics.prototype.resize = function (w, h) {
       this.width = w;
       this.height = h;
-      if (this._pInst) {
+      this.elt.width = w * this._pInst._pixelDensity;
+      this.elt.height = h * this._pInst._pixelDensity;
+      this.elt.style.width = w + 'px';
+      this.elt.style.height = h + 'px';
+      if (this._isMainCanvas) {
         this._pInst._setProperty('width', this.width);
         this._pInst._setProperty('height', this.height);
       }
+      this.drawingContext.scale(this._pInst._pixelDensity, this._pInst._pixelDensity);
     };
     return p5.Graphics;
   }({}, core, constants);
@@ -851,7 +893,7 @@ var filters = function (require) {
         }
       }
     }
-    function blurRGB(canvas, radius) {
+    function blurARGB(canvas, radius) {
       var pixels = Filters._toPixels(canvas);
       var width = canvas.width;
       var height = canvas.height;
@@ -860,8 +902,9 @@ var filters = function (require) {
       for (var j = 0; j < numPackedPixels; j++) {
         argb[j] = Filters._getARGB(pixels, j);
       }
-      var sum, cr, cg, cb;
+      var sum, cr, cg, cb, ca;
       var read, ri, ym, ymi, bk0;
+      var a2 = new Int32Array(numPackedPixels);
       var r2 = new Int32Array(numPackedPixels);
       var g2 = new Int32Array(numPackedPixels);
       var b2 = new Int32Array(numPackedPixels);
@@ -871,7 +914,7 @@ var filters = function (require) {
       var bm;
       for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-          cb = cg = cr = sum = 0;
+          cb = cg = cr = ca = sum = 0;
           read = x - blurRadius;
           if (read < 0) {
             bk0 = -read;
@@ -888,6 +931,7 @@ var filters = function (require) {
             }
             var c = argb[read + yi];
             bm = blurMult[i];
+            ca += bm[(c & -16777216) >>> 24];
             cr += bm[(c & 16711680) >> 16];
             cg += bm[(c & 65280) >> 8];
             cb += bm[c & 255];
@@ -895,6 +939,7 @@ var filters = function (require) {
             read++;
           }
           ri = yi + x;
+          a2[ri] = ca / sum;
           r2[ri] = cr / sum;
           g2[ri] = cg / sum;
           b2[ri] = cb / sum;
@@ -906,7 +951,7 @@ var filters = function (require) {
       ymi = ym * width;
       for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-          cb = cg = cr = sum = 0;
+          cb = cg = cr = ca = sum = 0;
           if (ym < 0) {
             bk0 = ri = -ym;
             read = x;
@@ -923,6 +968,7 @@ var filters = function (require) {
               break;
             }
             bm = blurMult[i];
+            ca += bm[a2[read]];
             cr += bm[r2[read]];
             cg += bm[g2[read]];
             cb += bm[b2[read]];
@@ -930,7 +976,7 @@ var filters = function (require) {
             ri++;
             read += width;
           }
-          argb[x + yi] = 4278190080 | cr / sum << 16 | cg / sum << 8 | cb / sum;
+          argb[x + yi] = ca / sum << 24 | cr / sum << 16 | cg / sum << 8 | cb / sum;
         }
         yi += width;
         ymi += width;
@@ -939,7 +985,7 @@ var filters = function (require) {
       Filters._setPixels(pixels, argb);
     }
     Filters.blur = function (canvas, radius) {
-      blurRGB(canvas, radius);
+      blurARGB(canvas, radius);
     };
     return Filters;
   }({});
@@ -972,6 +1018,8 @@ var p5Image = function (require, core, filters) {
       p5.prototype.set.call(this, x, y, imgOrCol);
     };
     p5.Image.prototype.resize = function (width, height) {
+      width = width || this.canvas.width;
+      height = width || this.canvas.height;
       var tempCanvas = document.createElement('canvas');
       tempCanvas.width = width;
       tempCanvas.height = height;
@@ -991,12 +1039,16 @@ var p5Image = function (require, core, filters) {
         p5Image = this;
       }
       var currBlend = this.drawingContext.globalCompositeOperation;
+      var scaleFactor = 1;
+      if (p5Image instanceof p5.Graphics) {
+        scaleFactor = p5Image._pInst._pixelDensity;
+      }
       var copyArgs = [
           p5Image,
           0,
           0,
-          p5Image.width,
-          p5Image.height,
+          scaleFactor * p5Image.width,
+          scaleFactor * p5Image.height,
           0,
           0,
           this.width,
@@ -1719,7 +1771,7 @@ var colorsetting = function (require, core, constants, p5Color) {
       } else {
         var curFill = this.drawingContext.fillStyle;
         var ctx = this.drawingContext;
-        ctx.fillStyle = p5.Color.getColor.apply(this, arguments);
+        ctx.fillStyle = p5.Color._getCanvasColor.apply(this, arguments);
         ctx.fillRect(0, 0, this.width, this.height);
         ctx.fillStyle = curFill;
       }
@@ -1749,7 +1801,7 @@ var colorsetting = function (require, core, constants, p5Color) {
     p5.prototype.fill = function () {
       this._setProperty('_doFill', true);
       var ctx = this.drawingContext;
-      ctx.fillStyle = p5.Color.getColor.apply(this, arguments);
+      ctx.fillStyle = p5.Color._getCanvasColor.apply(this, arguments);
     };
     p5.prototype.noFill = function () {
       this._setProperty('_doFill', false);
@@ -1760,10 +1812,30 @@ var colorsetting = function (require, core, constants, p5Color) {
     p5.prototype.stroke = function () {
       this._setProperty('_doStroke', true);
       var ctx = this.drawingContext;
-      ctx.strokeStyle = p5.Color.getColor.apply(this, arguments);
+      ctx.strokeStyle = p5.Color._getCanvasColor.apply(this, arguments);
     };
     return p5;
   }({}, core, constants, p5Color);
+var dataconversion = function (require, core) {
+    'use strict';
+    var p5 = core;
+    p5.prototype.float = function (str) {
+      return parseFloat(str);
+    };
+    p5.prototype.int = function (n, radix) {
+      if (typeof n === 'string') {
+        radix = radix || 10;
+        return parseInt(n, radix);
+      } else if (typeof n === 'number') {
+        return n | 0;
+      } else if (typeof n === 'boolean') {
+        return n ? 1 : 0;
+      } else if (n instanceof Array) {
+        return n.map(p5.prototype.int);
+      }
+    };
+    return p5;
+  }({}, core);
 var dataarray_functions = function (require, core) {
     'use strict';
     var p5 = core;
@@ -1962,7 +2034,7 @@ var environment = function (require, core, constants) {
         C.WAIT
       ];
     p5.prototype._frameRate = 0;
-    p5.prototype._lastFrameTime = 0;
+    p5.prototype._lastFrameTime = new Date().getTime();
     p5.prototype._targetFrameRate = 60;
     p5.prototype.frameCount = 0;
     p5.prototype.focused = true;
@@ -2154,27 +2226,28 @@ var imageloading_displaying = function (require, core, filters, canvas, constant
           callback(pImg);
         }
       };
-      img.crossOrigin = 'Anonymous';
+      if (path.indexOf('data:image/') !== 0) {
+        img.crossOrigin = 'Anonymous';
+      }
       img.src = path;
       return pImg;
     };
     p5.prototype.image = function (img, x, y, width, height) {
-      var frame = img.canvas ? img.canvas : img.elt;
-      if (width === undefined) {
-        width = img.width;
-      }
-      if (height === undefined) {
-        height = img.height;
-      }
+      var frame = img.canvas || img.elt;
+      x = x || 0;
+      y = y || 0;
+      width = width || img.width;
+      height = height || img.height;
       var vals = canvas.modeAdjust(x, y, width, height, this._imageMode);
-      if (this._tint) {
+      if (this._tint && img.canvas) {
         this.drawingContext.drawImage(this._getTintedImageCanvas(img), vals.x, vals.y, vals.w, vals.h);
       } else {
         this.drawingContext.drawImage(frame, vals.x, vals.y, vals.w, vals.h);
       }
     };
     p5.prototype.tint = function () {
-      var c = p5.Color.getNormalizedColor.apply(this, arguments);
+      var c = p5.Color._getFormattedColor.apply(this, arguments);
+      c = p5.Color._normalizeColorArray.call(this, c);
       this._tint = c;
     };
     p5.prototype.noTint = function () {
@@ -2795,6 +2868,11 @@ var inputfiles = function (require, core, reqwest) {
     p5.prototype.loadJSON = function (path, callback) {
       var ret = [];
       var t = path.indexOf('http') === -1 ? 'json' : 'jsonp';
+      if (typeof arguments[2] === 'string') {
+        if (arguments[2] === 'jsonp' || arguments[2] === 'json') {
+          t = arguments[2];
+        }
+      }
       reqwest({
         url: path,
         type: t,
@@ -2804,7 +2882,7 @@ var inputfiles = function (require, core, reqwest) {
           ret[k] = resp[k];
         }
         if (typeof callback !== 'undefined') {
-          callback(ret);
+          callback(resp);
         }
       });
       return ret;
@@ -2937,15 +3015,27 @@ var inputkeyboard = function (require, core) {
       this._setProperty('key', key);
       var keyPressed = this.keyPressed || window.keyPressed;
       if (typeof keyPressed === 'function' && !e.charCode) {
-        keyPressed(e);
+        var executeDefault = keyPressed(e);
+        if (executeDefault === false) {
+          e.preventDefault();
+        }
       }
     };
     p5.prototype.onkeyup = function (e) {
       var keyReleased = this.keyReleased || window.keyReleased;
       this._setProperty('isKeyPressed', false);
       this._setProperty('keyIsPressed', false);
+      var key = String.fromCharCode(e.which);
+      if (!key) {
+        key = e.which;
+      }
+      this._setProperty('key', key);
+      this._setProperty('keyCode', e.which);
       if (typeof keyReleased === 'function') {
-        keyReleased(e);
+        var executeDefault = keyReleased(e);
+        if (executeDefault === false) {
+          e.preventDefault();
+        }
       }
     };
     p5.prototype.onkeypress = function (e) {
@@ -2953,7 +3043,10 @@ var inputkeyboard = function (require, core) {
       this._setProperty('key', String.fromCharCode(e.which));
       var keyTyped = this.keyTyped || window.keyTyped;
       if (typeof keyTyped === 'function') {
-        keyTyped(e);
+        var executeDefault = keyTyped(e);
+        if (executeDefault === false) {
+          e.preventDefault();
+        }
       }
     };
     return p5;
@@ -2974,13 +3067,15 @@ var inputmouse = function (require, core, constants) {
     p5.prototype.mouseIsPressed = false;
     p5.prototype.isMousePressed = false;
     p5.prototype._updateMouseCoords = function (e) {
-      if (e.type === 'touchstart' || e.type === 'touchmove') {
+      if (e.type === 'touchstart' || e.type === 'touchmove' || e.type === 'touchend') {
         this._setProperty('mouseX', this.touchX);
         this._setProperty('mouseY', this.touchY);
       } else {
-        var mousePos = getMousePos(this._curElement.elt, e);
-        this._setProperty('mouseX', mousePos.x);
-        this._setProperty('mouseY', mousePos.y);
+        if (this._curElement !== null) {
+          var mousePos = getMousePos(this._curElement.elt, e);
+          this._setProperty('mouseX', mousePos.x);
+          this._setProperty('mouseY', mousePos.y);
+        }
       }
       this._setProperty('winMouseX', e.pageX);
       this._setProperty('winMouseY', e.pageY);
@@ -3018,19 +3113,19 @@ var inputmouse = function (require, core, constants) {
       if (!this.isMousePressed) {
         if (typeof context.mouseMoved === 'function') {
           executeDefault = context.mouseMoved(e);
-          if (executeDefault !== undefined && !executeDefault) {
+          if (executeDefault === false) {
             e.preventDefault();
           }
         }
       } else {
         if (typeof context.mouseDragged === 'function') {
           executeDefault = context.mouseDragged(e);
-          if (executeDefault !== undefined && !executeDefault) {
+          if (executeDefault === false) {
             e.preventDefault();
           }
         } else if (typeof context.touchMoved === 'function') {
           executeDefault = context.touchMoved(e);
-          if (!executeDefault) {
+          if (executeDefault === false) {
             e.preventDefault();
           }
           this._updateTouchCoords(e);
@@ -3043,14 +3138,15 @@ var inputmouse = function (require, core, constants) {
       this._setProperty('isMousePressed', true);
       this._setProperty('mouseIsPressed', true);
       this._setMouseButton(e);
+      this._updateMouseCoords(e);
       if (typeof context.mousePressed === 'function') {
         executeDefault = context.mousePressed(e);
-        if (executeDefault !== undefined && !executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       } else if (typeof context.touchStarted === 'function') {
         executeDefault = context.touchStarted(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
         this._updateTouchCoords(e);
@@ -3063,12 +3159,12 @@ var inputmouse = function (require, core, constants) {
       this._setProperty('mouseIsPressed', false);
       if (typeof context.mouseReleased === 'function') {
         executeDefault = context.mouseReleased(e);
-        if (executeDefault !== undefined && !executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       } else if (typeof context.touchEnded === 'function') {
         executeDefault = context.touchEnded(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
         this._updateTouchCoords(e);
@@ -3078,7 +3174,7 @@ var inputmouse = function (require, core, constants) {
       var context = this._isGlobal ? window : this;
       if (typeof context.mouseClicked === 'function') {
         var executeDefault = context.mouseClicked(e);
-        if (executeDefault !== undefined && !executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       }
@@ -3087,7 +3183,7 @@ var inputmouse = function (require, core, constants) {
       var context = this._isGlobal ? window : this;
       if (typeof context.mouseWheel === 'function') {
         var executeDefault = context.mouseWheel(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       }
@@ -3129,18 +3225,19 @@ var inputtouch = function (require, core) {
     p5.prototype.ptouchY = 0;
     p5.prototype.touches = [];
     p5.prototype._updateTouchCoords = function (e) {
-      if (e.type === 'mousedown' || e.type === 'mousemove') {
+      if (e.type === 'mousedown' || e.type === 'mousemove' || e.type === 'mouseup') {
         this._setProperty('touchX', this.mouseX);
         this._setProperty('touchY', this.mouseY);
       } else {
-        this._setProperty('touchX', e.changedTouches[0].pageX);
-        this._setProperty('touchY', e.changedTouches[0].pageY);
+        var touchPos = getTouchPos(this._curElement.elt, e, 0);
+        this._setProperty('touchX', touchPos.x);
+        this._setProperty('touchY', touchPos.y);
         var touches = [];
         for (var i = 0; i < e.changedTouches.length; i++) {
-          var ct = e.changedTouches[i];
+          var pos = getTouchPos(this._curElement.elt, e, i);
           touches[i] = {
-            x: ct.pageX,
-            y: ct.pageY
+            x: pos.x,
+            y: pos.y
           };
         }
         this._setProperty('touches', touches);
@@ -3150,18 +3247,26 @@ var inputtouch = function (require, core) {
       this._setProperty('ptouchX', this.touchX);
       this._setProperty('ptouchY', this.touchY);
     };
+    function getTouchPos(canvas, e, i) {
+      i = i || 0;
+      var rect = canvas.getBoundingClientRect();
+      return {
+        x: e.changedTouches[i].pageX - rect.left,
+        y: e.changedTouches[i].pageY - rect.top
+      };
+    }
     p5.prototype.ontouchstart = function (e) {
       var context = this._isGlobal ? window : this;
       var executeDefault;
       this._updateTouchCoords(e);
       if (typeof context.touchStarted === 'function') {
         executeDefault = context.touchStarted(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       } else if (typeof context.mousePressed === 'function') {
         executeDefault = context.mousePressed(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       }
@@ -3172,28 +3277,29 @@ var inputtouch = function (require, core) {
       this._updateTouchCoords(e);
       if (typeof context.touchMoved === 'function') {
         executeDefault = context.touchMoved(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       } else if (typeof context.mouseDragged === 'function') {
         executeDefault = context.mouseDragged(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
         this._updateMouseCoords(e);
       }
     };
     p5.prototype.ontouchend = function (e) {
+      this._updateTouchCoords(e);
       var context = this._isGlobal ? window : this;
       var executeDefault;
       if (typeof context.touchEnded === 'function') {
         executeDefault = context.touchEnded(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
       } else if (typeof context.mouseReleased === 'function') {
         executeDefault = context.mouseReleased(e);
-        if (!executeDefault) {
+        if (executeDefault === false) {
           e.preventDefault();
         }
         this._updateMouseCoords(e);
@@ -3908,18 +4014,8 @@ var renderingrendering = function (require, core, constants) {
         c = document.createElement('canvas');
         c.id = 'defaultCanvas';
       } else {
-        c = document.getElementById('defaultCanvas');
-        if (c) {
-          c.id = '';
-        } else {
-          var warn = 'Warning: createCanvas more than once NOT recommended.';
-          warn += ' Very unpredictable behavior may result.';
-          console.log(warn);
-        }
+        c = this.canvas;
       }
-      c.setAttribute('width', w * this._pixelDensity);
-      c.setAttribute('height', h * this._pixelDensity);
-      c.setAttribute('style', 'width:' + w + 'px !important; height:' + h + 'px !important;');
       if (!this._setupDone) {
         c.className += ' p5_hidden';
         c.style.visibility = 'hidden';
@@ -3929,41 +4025,31 @@ var renderingrendering = function (require, core, constants) {
       } else {
         document.body.appendChild(c);
       }
-      var pg = this._defaultGraphics;
-      if (!pg) {
-        pg = new p5.Graphics(c, this);
-        this._elements.push(pg);
-        this._defaultGraphics = pg;
-      } else {
-        pg.resize(w * this._pixelDensity, h * this._pixelDensity);
+      if (!this._defaultGraphics) {
+        this._defaultGraphics = new p5.Graphics(c, this, true);
+        this._elements.push(this._defaultGraphics);
       }
-      this.scale(this._pixelDensity, this._pixelDensity);
-      return pg;
+      this._defaultGraphics.resize(w, h);
+      this._defaultGraphics._applyDefaults();
+      return this._defaultGraphics;
     };
     p5.prototype.resizeCanvas = function (w, h) {
-      var pg = this._defaultGraphics;
-      if (pg) {
-        pg.resize(w * this._pixelDensity, h * this._pixelDensity);
-        pg.elt.setAttribute('width', w * this._pixelDensity);
-        pg.elt.setAttribute('height', h * this._pixelDensity);
-        pg.elt.setAttribute('style', 'width:' + w + 'px !important; height:' + h + 'px !important;');
-        this.scale(this._pixelDensity, this._pixelDensity);
+      if (this._defaultGraphics) {
+        this._defaultGraphics.resize(w, h);
+        this._defaultGraphics._applyDefaults();
+        this.redraw();
       }
     };
     p5.prototype.noCanvas = function () {
-      var c = document.getElementById('defaultCanvas');
-      if (c) {
-        c.parentNode.removeChild(c);
+      if (this.canvas) {
+        this.canvas.parentNode.removeChild(this.canvas);
       }
     };
     p5.prototype.createGraphics = function (w, h) {
       var c = document.createElement('canvas');
-      c.setAttribute('width', w * this._pixelDensity);
-      c.setAttribute('height', h * this._pixelDensity);
-      c.setAttribute('style', 'width:' + w + 'px !important; height:' + h + 'px !important;');
       var node = this._userNode || document.body;
       node.appendChild(c);
-      var pg = new p5.Graphics(c);
+      var pg = new p5.Graphics(c, this, false);
       this._elements.push(pg);
       for (var p in p5.prototype) {
         if (!pg.hasOwnProperty(p)) {
@@ -3974,7 +4060,8 @@ var renderingrendering = function (require, core, constants) {
           }
         }
       }
-      pg.scale(this._pixelDensity, this._pixelDensity);
+      pg.resize(w, h);
+      pg._applyDefaults();
       return pg;
     };
     p5.prototype.blendMode = function (mode) {
@@ -4026,6 +4113,8 @@ var shape2d_primitives = function (require, core, canvas, constants) {
       if (!this._doStroke && !this._doFill) {
         return;
       }
+      w = Math.abs(w);
+      h = Math.abs(h);
       var ctx = this.drawingContext;
       var vals = canvas.modeAdjust(x, y, w, h, this._ellipseMode);
       ctx.beginPath();
@@ -4402,7 +4491,7 @@ var structure = function (require, core) {
     };
     p5.prototype.push = function () {
       this.drawingContext.save();
-      this.styles.push({
+      this._styles.push({
         doStroke: this._doStroke,
         doFill: this._doFill,
         tint: this._tint,
@@ -4418,7 +4507,7 @@ var structure = function (require, core) {
     };
     p5.prototype.pop = function () {
       this.drawingContext.restore();
-      var lastS = this.styles.pop();
+      var lastS = this._styles.pop();
       this._doStroke = lastS.doStroke;
       this._doFill = lastS.doFill;
       this._tint = lastS.tint;
@@ -4660,7 +4749,7 @@ var typographyloading_displaying = function (require, core, canvas) {
     };
     return p5;
   }({}, core, canvas);
-var src_app = function (require, core, p5Color, p5Element, p5Graphics, p5Image, p5Vector, p5TableRow, p5Table, colorcreating_reading, colorsetting, constants, dataarray_functions, datastring_functions, environment, imageimage, imageloading_displaying, imagepixels, inputfiles, inputkeyboard, inputmouse, inputtime_date, inputtouch, mathmath, mathcalculation, mathrandom, mathnoise, mathtrigonometry, outputfiles, outputimage, outputtext_area, renderingrendering, shape2d_primitives, shapeattributes, shapecurves, shapevertex, structure, transform, typographyattributes, typographyloading_displaying) {
+var src_app = function (require, core, p5Color, p5Element, p5Graphics, p5Image, p5Vector, p5TableRow, p5Table, colorcreating_reading, colorsetting, constants, dataconversion, dataarray_functions, datastring_functions, environment, imageimage, imageloading_displaying, imagepixels, inputfiles, inputkeyboard, inputmouse, inputtime_date, inputtouch, mathmath, mathcalculation, mathrandom, mathnoise, mathtrigonometry, outputfiles, outputimage, outputtext_area, renderingrendering, shape2d_primitives, shapeattributes, shapecurves, shapevertex, structure, transform, typographyattributes, typographyloading_displaying) {
     'use strict';
     var p5 = core;
     var _globalInit = function () {
@@ -4677,4 +4766,4 @@ var src_app = function (require, core, p5Color, p5Element, p5Graphics, p5Image, 
     }
     window.p5 = p5;
     return p5;
-  }({}, core, p5Color, p5Element, p5Graphics, p5Image, p5Vector, p5TableRow, p5Table, colorcreating_reading, colorsetting, constants, dataarray_functions, datastring_functions, environment, imageimage, imageloading_displaying, imagepixels, inputfiles, inputkeyboard, inputmouse, inputtime_date, inputtouch, mathmath, mathcalculation, mathrandom, mathnoise, mathtrigonometry, outputfiles, outputimage, outputtext_area, renderingrendering, shape2d_primitives, shapeattributes, shapecurves, shapevertex, structure, transform, typographyattributes, typographyloading_displaying);
+  }({}, core, p5Color, p5Element, p5Graphics, p5Image, p5Vector, p5TableRow, p5Table, colorcreating_reading, colorsetting, constants, dataconversion, dataarray_functions, datastring_functions, environment, imageimage, imageloading_displaying, imagepixels, inputfiles, inputkeyboard, inputmouse, inputtime_date, inputtouch, mathmath, mathcalculation, mathrandom, mathnoise, mathtrigonometry, outputfiles, outputimage, outputtext_area, renderingrendering, shape2d_primitives, shapeattributes, shapecurves, shapevertex, structure, transform, typographyattributes, typographyloading_displaying);
