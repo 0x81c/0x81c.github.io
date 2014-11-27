@@ -8,13 +8,15 @@ var magenta;
 var yellow;
 var black;
 
+var theta = 0;
+
 
 function setup() {
   screen_width = ceil(window.innerWidth);
   screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
-  baseRectWidth = height;
-  baseRectHeight = height / 4;
+  baseRectWidth = width;
+  baseRectHeight = width / 4;
 
   cyan = color(0, 215, 250);
   magenta = color(255, 0, 170);
@@ -29,12 +31,13 @@ function draw() {
 
   translate(width / 2, height / 2);
   
-  var theta = map(mouseX, 0, width, PI / 32, TWO_PI);
-  var shrinkScale = map(mouseY, 0, height, .5, .9);
+  //var theta = map(mouseX, 0, width, PI / 32, TWO_PI);
+  theta += PI / 512;
+  var shrinkScale = map(mouseY, 0, height, .7, .83);
   
   push();
 
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < 20; i++) {
     fill(black);
     rect(0, baseRectHeight * 1.5, baseRectWidth, baseRectHeight);
     fill(cyan);
@@ -51,6 +54,6 @@ function draw() {
 
   pop();
   
-  baseRectWidth = height;
-  baseRectHeight = height / 4;
+  baseRectWidth = width;
+  baseRectHeight = width / 4;
 }
