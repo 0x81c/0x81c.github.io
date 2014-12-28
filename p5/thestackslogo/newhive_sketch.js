@@ -7,6 +7,7 @@ var cyan;
 var magenta;
 var yellow;
 var black;
+var shrinkScale = 1.1;
 
 var theta = 0;
 
@@ -15,8 +16,7 @@ function setup() {
   screen_width = ceil(window.innerWidth);
   screen_height = ceil(window.innerHeight);
   createCanvas(screen_width, screen_height);
-  baseRectWidth = width;
-  baseRectHeight = width / 4;
+  setup_vars();
 
   cyan = color(0, 215, 250);
   magenta = color(255, 0, 170);
@@ -24,18 +24,28 @@ function setup() {
   black = color(5, 5, 5);
 }
 
+function setup_vars() {
+  //separate so we can rerun on resize
+  baseRectWidth = width;
+  baseRectHeight = width / 4;  
+}
+
 function draw() {
   background(255, 255, 255);
   noStroke();
   rectMode(CENTER);
 
-  translate(width / 2, height / 2);
   
   //var theta = map(mouseX, 0, width, PI / 32, TWO_PI);
-  theta += PI / 512;
-  var shrinkScale = map(mouseY, 0, height, .7, .83);
+  theta += PI / 400;
+  // var shrinkScale = map(mouseY, 0, height, .7, .83);
+  if (shrinkScale > .75) {
+    shrinkScale -= .0007;
+  }
   
   push();
+
+  translate(width / 2, height / 2);
 
   for (var i = 0; i < 20; i++) {
     fill(black);
@@ -56,4 +66,11 @@ function draw() {
   
   baseRectWidth = width;
   baseRectHeight = width / 4;
+}
+
+function windowResized() {
+  screen_width = window.innerWidth;
+  screen_height = window.innerHeight;
+  resizeCanvas(screen_width, screen_height);
+  setup_vars();
 }
